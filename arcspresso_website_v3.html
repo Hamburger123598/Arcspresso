@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ArcSpresso</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #F5F0E8; --gold: #C9A84C; --gold-light: #E8D5A3;
+    --dark: #0D0D0D; --dark2: #161616; --dark3: #1E1E1E; --dark4: #2A2A2A;
+    --muted: #888; --text: #E8E2D9; --text-dim: #A09890;
+    --radius: 4px; --radius-lg: 8px;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--dark); color: var(--text); line-height: 1.6; font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(13,13,13,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,168,76,0.15); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; letter-spacing: 0.04em; color: var(--cream); }
+  .logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 13px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta { background: var(--gold); color: var(--dark) !important; padding: 8px 20px; border-radius: var(--radius); font-weight: 500 !important; text-transform: uppercase !important; letter-spacing: 0.06em !important; font-size: 12px !important; text-decoration: none; transition: background 0.2s; }
+  .nav-cta:hover { background: var(--gold-light) !important; color: var(--dark) !important; }
+
+  .hero { min-height: 92vh; display: flex; align-items: center; position: relative; overflow: hidden; padding: 6rem 2rem 4rem; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 75% 40%, rgba(201,168,76,0.06) 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 20% 70%, rgba(201,168,76,0.04) 0%, transparent 60%); pointer-events: none; }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; }
+  .hero-inner { position: relative; max-width: 1100px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 10px; }
+  .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--gold); }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 700; line-height: 1.1; color: var(--cream); margin-bottom: 1.5rem; }
+  .hero h1 em { font-style: italic; color: var(--gold); }
+  .hero-desc { font-size: 17px; font-weight: 300; color: var(--text-dim); line-height: 1.8; margin-bottom: 2.5rem; max-width: 440px; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary { background: var(--gold); color: var(--dark); padding: 14px 32px; border-radius: var(--radius); font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; display: inline-block; }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--text); padding: 14px 32px; border-radius: var(--radius); font-size: 13px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; border: 1px solid rgba(232,226,217,0.2); cursor: pointer; transition: border-color 0.2s, color 0.2s; display: inline-block; }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-visual { display: flex; justify-content: center; align-items: center; }
+  .machine-card { background: var(--dark3); border: 1px solid rgba(201,168,76,0.2); border-radius: 12px; padding: 2.5rem; width: 100%; max-width: 380px; position: relative; overflow: hidden; }
+  .machine-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+  .machine-icon { width: 80px; height: 80px; margin: 0 auto 1.5rem; display: block; }
+  .machine-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); text-align: center; margin-bottom: 0.4rem; }
+  .machine-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 500; color: var(--cream); text-align: center; margin-bottom: 1.5rem; }
+  .machine-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: rgba(201,168,76,0.1); border-radius: var(--radius); overflow: hidden; }
+  .stat-cell { background: var(--dark4); padding: 12px 8px; text-align: center; }
+  .stat-num { font-size: 18px; font-weight: 500; color: var(--gold); display: block; line-height: 1.2; }
+  .stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; display: block; }
+
+  section { padding: 5rem 2rem; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 700; color: var(--cream); line-height: 1.2; margin-bottom: 1rem; }
+  .section-sub { font-size: 16px; font-weight: 300; color: var(--text-dim); max-width: 560px; line-height: 1.8; margin-bottom: 3rem; }
+
+  .services-strip { background: var(--dark2); border-top: 1px solid rgba(201,168,76,0.1); border-bottom: 1px solid rgba(201,168,76,0.1); }
+  .services-row { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .service-item { padding: 3rem 2rem; border-right: 1px solid rgba(201,168,76,0.08); }
+  .service-item:last-child { border-right: none; }
+  .service-num { font-size: 11px; letter-spacing: 0.15em; color: rgba(201,168,76,0.4); margin-bottom: 1rem; }
+  .service-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--cream); margin-bottom: 0.75rem; }
+  .service-desc { font-size: 13px; color: var(--text-dim); line-height: 1.8; margin-bottom: 1.25rem; }
+  .service-link { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: gap 0.2s; }
+  .service-link:hover { gap: 10px; }
+
+  .programs-section { background: var(--dark2); }
+  .plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(201,168,76,0.1); border-radius: var(--radius-lg); overflow: hidden; }
+  .plan-card { background: var(--dark3); padding: 2rem 1.75rem; transition: background 0.2s; }
+  .plan-card:hover { background: var(--dark4); }
+  .plan-card.featured { background: var(--dark4); border-left: 2px solid var(--gold); }
+  .plan-badge { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); background: rgba(201,168,76,0.1); padding: 3px 10px; border-radius: 2px; display: inline-block; margin-bottom: 1rem; }
+  .plan-name { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--cream); margin-bottom: 0.4rem; }
+  .plan-desc { font-size: 13px; color: var(--text-dim); margin-bottom: 1.5rem; line-height: 1.7; }
+  .plan-price { font-size: 13px; color: var(--text-dim); margin-bottom: 1.75rem; }
+  .plan-price strong { font-size: 28px; font-weight: 500; color: var(--cream); }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+  .plan-features li { font-size: 13px; color: var(--text-dim); display: flex; align-items: flex-start; gap: 10px; }
+  .plan-features li::before { content: ''; display: block; width: 14px; height: 14px; min-width: 14px; border-radius: 50%; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); margin-top: 2px; }
+  .plan-features li.active::before { background: var(--gold); border-color: var(--gold); }
+
+  .why-section { background: var(--dark); }
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
+  .why-item { display: flex; gap: 1.25rem; align-items: flex-start; }
+  .why-icon { width: 44px; height: 44px; min-width: 44px; border-radius: var(--radius); border: 1px solid rgba(201,168,76,0.25); display: flex; align-items: center; justify-content: center; }
+  .why-icon svg { width: 20px; height: 20px; }
+  .why-item h3 { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--cream); margin-bottom: 0.4rem; font-weight: 500; }
+  .why-item p { font-size: 14px; color: var(--text-dim); line-height: 1.75; }
+
+  /* TRUST SECTION */
+  .trust-section { background: var(--dark2); }
+
+  .trust-header { display: flex; flex-direction: column; margin-bottom: 3rem; }
+
+  .trust-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
+
+  .trust-card {
+    background: var(--dark3);
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    transition: border-color 0.2s;
+  }
+  .trust-card:hover { border-color: rgba(201,168,76,0.3); }
+
+  .trust-icon-wrap {
+    width: 48px; height: 48px; min-width: 48px;
+    border-radius: var(--radius);
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .trust-icon-wrap svg { width: 22px; height: 22px; }
+
+  .trust-card-label {
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 0.4rem;
+  }
+  .trust-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px; color: var(--cream); margin-bottom: 0.5rem; font-weight: 500;
+  }
+  .trust-card-desc { font-size: 13px; color: var(--text-dim); line-height: 1.75; }
+
+  /* Guarantee bar */
+  .guarantee-bar {
+    background: var(--dark3);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    position: relative;
+    overflow: hidden;
+  }
+  .guarantee-bar::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .guarantee-item {
+    padding: 0.5rem 1.5rem;
+    border-right: 1px solid rgba(201,168,76,0.1);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .guarantee-item:first-child { padding-left: 0; }
+  .guarantee-item:last-child { border-right: none; }
+
+  .g-icon {
+    width: 36px; height: 36px; min-width: 36px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.1);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .g-icon svg { width: 16px; height: 16px; }
+
+  .g-text strong { display: block; font-size: 14px; font-weight: 500; color: var(--cream); }
+  .g-text span { font-size: 12px; color: var(--text-dim); }
+
+  .cta-section { background: var(--dark2); text-align: center; position: relative; overflow: hidden; }
+  .cta-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 80% at 50% 100%, rgba(201,168,76,0.07) 0%, transparent 70%); pointer-events: none; }
+  .cta-inner { position: relative; max-width: 600px; margin: 0 auto; }
+  .cta-form { display: flex; gap: 10px; max-width: 420px; margin: 0 auto; }
+  .cta-input { flex: 1; background: var(--dark4); border: 1px solid rgba(201,168,76,0.2); border-radius: var(--radius); padding: 13px 16px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.2s; }
+  .cta-input::placeholder { color: var(--muted); }
+  .cta-input:focus { border-color: var(--gold); }
+
+  footer { background: var(--dark); border-top: 1px solid rgba(201,168,76,0.1); padding: 3rem 2rem; }
+  .footer-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; }
+  .footer-brand p { font-size: 13px; color: var(--text-dim); line-height: 1.8; margin-top: 0.75rem; max-width: 240px; }
+  .footer-col h4 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 1rem; font-weight: 500; }
+  .footer-col a { display: block; font-size: 13px; color: var(--muted); text-decoration: none; margin-bottom: 0.6rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-bottom { max-width: 1100px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); }
+
+  @media (max-width: 800px) {
+    .hero-inner, .plans-grid, .services-row, .trust-grid, .footer-inner, .why-grid, .guarantee-bar { grid-template-columns: 1fr; }
+    .guarantee-item { border-right: none; border-bottom: 1px solid rgba(201,168,76,0.1); padding: 1rem 0; }
+    .guarantee-item:last-child { border-bottom: none; }
+    .hero { padding: 4rem 1.5rem; }
+    section { padding: 3.5rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Arc<span>Spresso</span></div>
+  <ul class="nav-links">
+    <li><a href="#programs">Programs</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact" class="nav-cta">Get a Quote</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <div class="hero-eyebrow">Office Coffee Specialists</div>
+      <h1>Fuel Your Team.<br><em>Elevate</em> Your Office.</h1>
+      <p class="hero-desc">ArcSpresso delivers premium office coffee programs, professional espresso machine sales, and expert repair services — all under one roof.</p>
+      <div class="hero-actions">
+        <a href="#programs" class="btn-primary">Explore Programs</a>
+        <a href="#contact" class="btn-ghost">Get a Quote</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="machine-card">
+        <svg class="machine-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="12" y="20" width="56" height="44" rx="6" fill="#2A2A2A" stroke="#C9A84C" stroke-width="1.5"/>
+          <rect x="20" y="28" width="22" height="18" rx="3" fill="#1E1E1E" stroke="#C9A84C" stroke-width="1"/>
+          <circle cx="55" cy="34" r="7" fill="#1E1E1E" stroke="#C9A84C" stroke-width="1"/>
+          <circle cx="55" cy="34" r="3" fill="#C9A84C"/>
+          <rect x="20" y="52" width="40" height="4" rx="2" fill="#C9A84C" opacity="0.3"/>
+          <rect x="32" y="64" width="6" height="8" rx="1" fill="#2A2A2A" stroke="#C9A84C" stroke-width="1"/>
+          <rect x="42" y="64" width="6" height="8" rx="1" fill="#2A2A2A" stroke="#C9A84C" stroke-width="1"/>
+          <circle cx="40" cy="10" r="4" fill="#C9A84C" opacity="0.5"/>
+          <line x1="40" y1="14" x2="40" y2="20" stroke="#C9A84C" stroke-width="1.5" opacity="0.5"/>
+        </svg>
+        <div class="machine-label">Professional Grade Service</div>
+        <div class="machine-title">Office Coffee, Perfected</div>
+        <div class="machine-stats">
+          <div class="stat-cell">
+            <span class="stat-num">2–5</span>
+            <span class="stat-label">Yrs Experience</span>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-num">Free</span>
+            <span class="stat-label">Consultation</span>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-num">100%</span>
+            <span class="stat-label">Satisfaction</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="services-strip" id="services">
+  <div class="section-inner">
+    <div class="services-row">
+      <div class="service-item">
+        <div class="service-num">01</div>
+        <div class="service-title">Office Coffee Programs</div>
+        <p class="service-desc">Fully managed subscription services — beans, equipment, and maintenance delivered on your schedule.</p>
+        <span class="service-link" onclick="document.getElementById('programs').scrollIntoView({behavior:'smooth'})">Explore Plans →</span>
+      </div>
+      <div class="service-item">
+        <div class="service-num">02</div>
+        <div class="service-title">Espresso Machine Sales</div>
+        <p class="service-desc">Professional-grade machines for any office size and budget, with expert guidance to find your perfect fit.</p>
+        <span class="service-link">View Machines →</span>
+      </div>
+      <div class="service-item">
+        <div class="service-num">03</div>
+        <div class="service-title">Repair & Maintenance</div>
+        <p class="service-desc">Certified technicians for all major brands. Fast turnaround, transparent pricing, no downtime surprises.</p>
+        <span class="service-link">Book a Service →</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="programs-section" id="programs">
+  <div class="section-inner">
+    <div class="section-tag">Office Coffee Programs</div>
+    <h2 class="section-title">Plans Built for Teams,<br>Not Compromises</h2>
+    <p class="section-sub">Flexible subscription programs that keep your team fueled without the overhead. All plans include equipment, supply delivery, and dedicated support.</p>
+    <div class="plans-grid">
+      <div class="plan-card">
+        <span class="plan-badge">Essential</span>
+        <div class="plan-name">Starter Brew</div>
+        <p class="plan-desc">Perfect for small offices. A dependable drip station with consistent supply delivery.</p>
+        <div class="plan-price">Starting at <strong>$149</strong>/mo</div>
+        <ul class="plan-features">
+          <li class="active">Drip coffee station included</li>
+          <li class="active">Monthly bean delivery</li>
+          <li class="active">Filters & supplies stocked</li>
+          <li>Espresso capability</li>
+          <li>Priority tech support</li>
+          <li>Branded equipment option</li>
+        </ul>
+        <a href="#contact" class="btn-ghost" style="font-size:12px; padding:10px 20px; display:inline-block;">Get Started</a>
+      </div>
+      <div class="plan-card featured">
+        <span class="plan-badge" style="background:rgba(201,168,76,0.2);">★ Most Popular</span>
+        <div class="plan-name">Professional</div>
+        <p class="plan-desc">The full espresso experience. Premium machine, specialty beans, hands-off management.</p>
+        <div class="plan-price">Starting at <strong>$349</strong>/mo</div>
+        <ul class="plan-features">
+          <li class="active">Professional espresso machine</li>
+          <li class="active">Bi-weekly specialty bean delivery</li>
+          <li class="active">All consumables included</li>
+          <li class="active">Bi-annual machine maintenance</li>
+          <li class="active">Priority tech support</li>
+          <li>Branded equipment option</li>
+        </ul>
+        <a href="#contact" class="btn-primary" style="font-size:12px; padding:10px 20px; display:inline-block;">Get Started</a>
+      </div>
+      <div class="plan-card">
+        <span class="plan-badge">Enterprise</span>
+        <div class="plan-name">Elite Suite</div>
+        <p class="plan-desc">White-glove service for large offices. Multiple stations, custom branding, quarterly reviews.</p>
+        <div class="plan-price">Starting at <strong>$699</strong>/mo</div>
+        <ul class="plan-features">
+          <li class="active">Multi-station setup</li>
+          <li class="active">Weekly supply delivery</li>
+          <li class="active">All consumables included</li>
+          <li class="active">Quarterly service visits</li>
+          <li class="active">24/7 priority support</li>
+          <li class="active">Custom branded equipment</li>
+        </ul>
+        <a href="#contact" class="btn-ghost" style="font-size:12px; padding:10px 20px; display:inline-block;">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why-section" id="about">
+  <div class="section-inner">
+    <div class="section-tag">Why ArcSpresso</div>
+    <h2 class="section-title">A Partner, Not Just<br>a Vendor</h2>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Commercial-Grade Equipment</h3>
+          <p>We source and service professional espresso machines built for high-volume, daily office use — not consumer gear repackaged for business.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Hands-On Experience</h3>
+          <p>Years of hands-on work with commercial espresso equipment means we understand how machines behave in real office environments — not just on paper.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round">
+            <path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Transparent, Flat-Rate Plans</h3>
+          <p>No hidden fees, no surprises. Our subscription model keeps your coffee budget predictable month over month.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Dedicated Account Management</h3>
+          <p>Every client gets a named account manager. One call handles billing, delivery changes, and tech support.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST SECTION (replaces testimonials) -->
+<section class="trust-section">
+  <div class="section-inner">
+    <div class="trust-header">
+      <div class="section-tag">Our Commitment</div>
+      <h2 class="section-title">Built on Integrity,<br>Backed by Experience</h2>
+      <p class="section-sub">We're a licensed, insured business with hands-on commercial equipment experience. No inflated numbers — just honest service and a satisfaction guarantee on everything we do.</p>
+    </div>
+
+    <div class="trust-grid">
+      <div class="trust-card">
+        <div class="trust-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="trust-card-label">Verified</div>
+          <div class="trust-card-title">Licensed & Insured</div>
+          <p class="trust-card-desc">ArcSpresso operates as a fully licensed and insured business. You're protected on every job — from equipment installation to on-site repair visits.</p>
+        </div>
+      </div>
+
+      <div class="trust-card">
+        <div class="trust-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+          </svg>
+        </div>
+        <div>
+          <div class="trust-card-label">Guaranteed</div>
+          <div class="trust-card-title">Satisfaction Guarantee</div>
+          <p class="trust-card-desc">Every service call and program subscription is backed by our satisfaction guarantee. If something isn't right, we make it right — no runaround.</p>
+        </div>
+      </div>
+
+      <div class="trust-card">
+        <div class="trust-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+          </svg>
+        </div>
+        <div>
+          <div class="trust-card-label">Experience</div>
+          <div class="trust-card-title">Commercial Equipment Background</div>
+          <p class="trust-card-desc">Our team brings 2–5 years of direct, hands-on experience with commercial espresso and coffee equipment — sales, installation, and repair.</p>
+        </div>
+      </div>
+
+      <div class="trust-card">
+        <div class="trust-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="trust-card-label">No Pressure</div>
+          <div class="trust-card-title">Free Consultations</div>
+          <p class="trust-card-desc">Not sure what your office needs? We offer free, no-obligation consultations to assess your space, usage, and budget before recommending anything.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="guarantee-bar">
+      <div class="guarantee-item">
+        <div class="g-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="g-text">
+          <strong>Licensed & Insured</strong>
+          <span>Every visit, every time</span>
+        </div>
+      </div>
+      <div class="guarantee-item">
+        <div class="g-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round">
+            <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+          </svg>
+        </div>
+        <div class="g-text">
+          <strong>Satisfaction Guaranteed</strong>
+          <span>On all services & programs</span>
+        </div>
+      </div>
+      <div class="guarantee-item">
+        <div class="g-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+          </svg>
+        </div>
+        <div class="g-text">
+          <strong>Free Consultation</strong>
+          <span>No obligation, no pressure</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="contact">
+  <div class="cta-inner">
+    <div class="section-tag" style="text-align:center;">Get Started</div>
+    <h2 class="section-title">Ready to Upgrade<br>Your Office Coffee?</h2>
+    <p class="section-sub" style="margin: 0 auto 2.5rem; text-align:center;">Tell us about your team and we'll recommend the right plan — no commitment required.</p>
+    <div class="cta-form">
+      <input type="email" class="cta-input" placeholder="Work email address" />
+      <button class="btn-primary" style="white-space:nowrap;">Request Quote</button>
+    </div>
+    <p style="font-size:12px; color: var(--muted); margin-top:1rem;">Or call us: <span style="color:var(--gold);">(813) 000-0000</span></p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Arc<span>Spresso</span></div>
+      <p>Premium office coffee programs, professional espresso machine sales, and certified repair services for businesses of every size.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Programs</h4>
+      <a href="#">Starter Brew</a>
+      <a href="#">Professional</a>
+      <a href="#">Elite Suite</a>
+      <a href="#">Custom Plans</a>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="#">Machine Sales</a>
+      <a href="#">Repair & Service</a>
+      <a href="#">Preventive Maintenance</a>
+      <a href="#">Equipment Leasing</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#">Contact</a>
+      <a href="#">Service Area</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ArcSpresso. All rights reserved.</span>
+    <span>Brandon, FL · Serving the Greater Tampa Bay Area</span>
+  </div>
+</footer>
+
+</body>
+</html>
