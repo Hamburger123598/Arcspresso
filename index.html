@@ -13,8 +13,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <!-- Primary SEO -->
-<title>ArcSpresso | Office Coffee Service & Espresso Machine Repair – Chicago, IL</title>
-<meta name="description" content="ArcSpresso provides office coffee programs, espresso machine sales, and repair services across the Greater Chicagoland Area. Serving Chicago businesses with De'Longhi, Jura, Breville, and Gaggia machines.">
+<title>ArcSpresso | Office Coffee Service & Espresso Machine Repair</title>
+<meta name="description" content="ArcSpresso provides office coffee programs, espresso machine sales, and repair services across the Greater Chicagoland Area. Satisfaction guaranteed.">
 <meta name="keywords" content="office coffee service Chicago, office coffee program Chicago, espresso machine repair Chicago, commercial coffee service Chicago, Jura repair Chicago, De'Longhi repair Chicago, Breville repair Chicago">
 
 <!-- Geo targeting -->
@@ -415,13 +415,13 @@
   </address>
 </div>
 <!-- NAV -->
-<nav>
+<nav role ="navigation">
   <a href="#" class="logo">Arc<span>Spresso</span></a>
   <ul class="nav-links" id="nav-links">
     <li><a href="#ocp">Coffee Programs</a></li>
+    <li><a href="#about">About</a></li>
     <li><a href="#sales">Machine Sales</a></li>
     <li><a href="#repair">Repair</a></li>
-    <li><a href="#about">About</a></li>
     <li><a href="#contact" class="nav-cta">Get a Quote</a></li>
   </ul>
   <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
@@ -430,7 +430,7 @@
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" role ="banner">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
   <div class="hero-inner">
@@ -467,7 +467,7 @@
     </div>
   </div>
 </section>
-
+<main role="main">
 <!-- SERVICES STRIP -->
 <div class="services-strip">
   <div class="services-row">
@@ -968,7 +968,7 @@
         </div>
         <div class="form-row">
           <div class="field">
-            <label>Company size <span class="req">*</span></label>
+            <label>Company size <span class="req">*</span>
             <select name="company_size" required>
               <option value="" disabled selected>Select headcount</option>
               <option value="1-10">1–10 employees</option>
@@ -977,9 +977,10 @@
               <option value="51-100">51–100 employees</option>
               <option value="100+">100+ employees</option>
             </select>
+            </label>
           </div>
           <div class="field">
-            <label>Service interested in <span class="req">*</span></label>
+            <label>Service interested in <span class="req">*</span>
             <select name="service_interest" required>
               <option value="" disabled selected>Select a service</option>
               <option value="office-coffee-program">Office coffee program</option>
@@ -987,6 +988,7 @@
               <option value="repair-service">Repair or maintenance</option>
               <option value="not-sure">Not sure yet</option>
             </select>
+            </label>
           </div>
         </div>
         <div class="form-divider"></div>
@@ -1003,6 +1005,7 @@
     </div>
   </div>
 </section>
+</main>
 
 <!-- FOOTER -->
 <footer>
@@ -1071,7 +1074,7 @@
 </script>
     </div>
   </div>
-  <div class="footer-bottom">
+  <div class="footer-bottom" role="contentinfo">
     <span>© 2025 Arcadian Technologies LLC, operating as Arcspresso. All rights reserved.</span>
     <span>Chicago, IL &middot; Serving the Greater Chicagoland Area</span>
   </div>
